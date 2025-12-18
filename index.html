@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyDeen Companion - Islamic Lifestyle Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <style>
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2E7D32;
+            --dark-green: #1B5E20;
+            --accent-gold: #D4AF37;
+            --light-gold: #FFD54F;
+            --charcoal: #2D3436;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --white: #ffffff;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --error: #f44336;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--charcoal);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* ===== HEADER & NAVIGATION ===== */
+        header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-family: 'Amiri', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav li {
+            margin-left: 1.5rem;
+        }
+
+        nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+
+        nav a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        nav a:hover, nav li.active a {
+            color: var(--light-gold);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== WELCOME BANNER ===== */
+        .welcome-banner {
+            background: linear-gradient(to right, var(--accent-gold), var(--light-gold));
+            color: var(--charcoal);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .welcome-banner h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .prayer-highlight {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .prayer-highlight i {
+            color: var(--primary-green);
+            margin-right: 10px;
+        }
+
+        /* ===== QUICK ACTIONS ===== */
+        .quick-actions {
+            margin-bottom: 2.5rem;
+        }
+
+        .quick-actions h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+            color: var(--charcoal);
+            border-left: 5px solid var(--primary-green);
+            padding-left: 10px;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid var(--medium-gray);
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: var(--white);
+            font-size: 1.5rem;
+        }
+
+        .action-card h4 {
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+        }
+
+        .action-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* ===== DASHBOARD CARDS ===== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .dashboard-card h3 {
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+            color: var(--charcoal);
+        }
+
+        .dashboard-card h3 i {
+            margin-right: 10px;
+            color: var(--primary-green);
+        }
+
+        /* ===== PRAYER TIMES ===== */
+        .prayer-times-widget {
+            margin-bottom: 1rem;
+        }
+
+        .prayer-time {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .prayer-time:last-child {
+            border-bottom: none;
+        }
+
+        .prayer-time.highlight {
+            background-color: #E8F5E9;
+            margin: 0 -1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        /* ===== PRAYER PAGE ===== */
+        .schedule-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .prayer-schedule table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .prayer-schedule th {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--primary-green);
+            background-color: var(--light-gray);
+        }
+
+        .prayer-schedule td {
+            padding: 12px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .prayer-schedule tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ===== QIBLA COMPASS ===== */
+        .qibla-widget {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .compass-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+        }
+
+        .compass-base {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #f44336 0deg 2deg, transparent 2deg 360deg);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border: 8px solid #f5f5f5;
+        }
+
+        .compass-needle {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform-origin: bottom center;
+            width: 8px;
+            height: 40%;
+            background-color: var(--accent-gold);
+            border-radius: 4px;
+            transform: translateX(-50%) rotate(70deg);
+            transition: transform 0.5s ease;
+        }
+
+        .compass-direction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: var(--charcoal);
+        }
+
+        /* ===== TOGGLE SWITCH ===== */
+        .reminder-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .reminder-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--dark-green);
+        }
+
+        .btn-gold {
+            background-color: var(--accent-gold);
+            color: var(--charcoal);
+        }
+
+        .btn-gold:hover {
+            background-color: var(--light-gold);
+        }
+
+        /* ===== UPDATES LIST ===== */
+        .updates-list {
+            list-style: none;
+        }
+
+        .updates-list li {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .updates-list li:last-child {
+            border-bottom: none;
+        }
+
+        .updates-list li i {
+            font-size: 1.2rem;
+            margin-right: 15px;
+            margin-top: 3px;
+        }
+
+        .updates-list li strong {
+            display: block;
+            color: var(--charcoal);
+        }
+
+        .updates-list li p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* ===== LINKS ===== */
+        .view-all {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .view-all i {
+            margin-left: 8px;
+            transition: transform 0.3s;
+        }
+
+        .view-all:hover i {
+            transform: translateX(5px);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background-color: var(--charcoal);
+            color: #ccc;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin: 0.3rem 0;
+            font-size: 0.9rem;
+        }
+
+        /* ===== MESSAGE BOX ===== */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: none;
+            max-width: 300px;
+        }
+
+        .message-box.success {
+            background-color: var(--success);
+            color: white;
+            display: block;
+        }
+
+        .message-box.error {
+            background-color: var(--error);
+            color: white;
+            display: block;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                right: 20px;
+                top: 15px;
+            }
+            
+            nav {
+                width: 100%;
+                display: none;
+                margin-top: 1rem;
+            }
+            
+            nav.active {
+                display: block;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            nav li {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            nav a {
+                padding: 0.8rem;
+                justify-content: center;
+            }
+            
+            .action-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .schedule-controls {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-banner h2 {
+                font-size: 1.4rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Message Box for Notifications -->
+    <div id="messageBox" class="message-box"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-mosque"></i>
+                <h1>MyDeen Companion</h1>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav id="mainNav">
+                <ul>
+                    <li class="active"><a href="#" data-page="home"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#" data-page="prayer"><i class="fas fa-clock"></i> Prayer</a></li>
+                    <li><a href="#" data-page="quran"><i class="fas quran-icon">ٱ</i> Quran</a></li>
+                    <li><a href="#" data-page="halal"><i class="fas fa-utensils"></i> Halal Living</a></li>
+                    <li><a href="#" data-page="community"><i class="fas fa-users"></i> Community</a></li>
+                    <li><a href="#" data-page="profile"><i class="fas fa-user"></i> Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content - Home Page -->
+    <main class="container">
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <div class="welcome-banner">
+                <h2>As-salamu alaykum, <span id="userName">Ahmed</span>.</h2>
+                <div class="prayer-highlight">
+                    <i class="fas fa-bell"></i>
+                    <span>Next: <strong id="nextPrayerName">Asr</strong> in <strong id="nextPrayerTime">1h 25m</strong> (<span id="nextPrayerActualTime">3:45 PM</span>)</span>
+                </div>
+            </div>
+
+            <section class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-grid">
+                    <div class="action-card" data-action="qibla">
+                        <div class="action-icon" style="background-color: var(--primary-green);">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <h4>Qibla Direction</h4>
+                        <p>Find the Qibla</p>
+                    </div>
+                    <div class="action-card" data-action="dua">
+                        <div class="action-icon" style="background-color: var(--accent-gold);">
+                            <i class="fas quran-icon">ٱ</i>
+                        </div>
+                        <h4>Daily Dua</h4>
+                        <p>500+ Duas</p>
+                    </div>
+                    <div class="action-card" data-action="quran">
+                        <div class="action-icon" style="background-color: #1565C0;">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <h4>Read Quran</h4>
+                        <p>With Translation</p>
+                    </div>
+                    <div class="action-card" data-action="scanner">
+                        <div class="action-icon" style="background-color: #6A1B9A;">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h4>Halal Scanner</h4>
+                        <p>Scan Product</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dashboard-grid">
+                <section class="dashboard-card">
+                    <h3><i class="fas fa-calendar-day"></i> Today's Prayer Times</h3>
+                    <div class="prayer-times-widget">
+                        <div class="prayer-time"><span>Fajr</span><span>5:45 AM</span></div>
+                        <div class="prayer-time"><span>Dhuhr</span><span>1:15 PM</span></div>
+                        <div class="prayer-time highlight"><span>Asr</span><span>3:45 PM</span></div>
+                        <div class="prayer-time"><span>Maghrib</span><span>7:10 PM</span></div>
+                        <div class="prayer-time"><span>Isha</span><span>8:30 PM</span></div>
+                    </div>
+                    <a href="#" class="view-all" data-page="prayer">View Full Schedule <i class="fas fa-arrow-right"></i></a>
+                </section>
+
+                <section class="dashboard-card">
+                    <h3><i class="fas fa-bullhorn"></i> Community Updates</h3>
+                    <ul class="updates-list">
+                        <li>
+                            <i class="fas fa-hands-helping" style="color: var(--primary-green);"></i>
+                            <div>
+                                <strong>Mosque Cleanup Drive</strong>
+                                <p>Sat, Feb 15 • 8:00 AM • Masjid Jamek</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-graduation-cap" style="color: var(--accent-gold);"></i>
+                            <div>
+                                <strong>New Tajweed Class</strong>
+                                <p>Starts Wed, 8:00 PM • Online</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-heart" style="color: #e91e63;"></i>
+                            <div>
+                                <strong>Winter Aid Donations</strong>
+                                <p>Support families in need</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <a href="#" class="view-all" data-page="community">See All Events <i class="fas fa-arrow-right"></i></a>
+                </section>
+            </div>
+        </section>
+
+        <!-- Prayer Page -->
+        <section id="prayer" class="page">
+            <div class="welcome-banner">
+                <h2>Prayer Center</h2>
+                <div class="prayer-highlight">
+                    <i class="fas fa-location-dot"></i>
+                    <span>Location: <strong id="currentLocation">Kuala Lumpur, Malaysia</strong></span>
+                    <button id="changeLocationBtn" class="btn" style="margin-left: 15px; padding: 5px 10px;">Change</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <section class="dashboard-card">
+                    <h3><i class="fas fa-compass"></i> Qibla Direction</h3>
+                    <div class="qibla-widget">
+                        <div class="compass-container">
+                            <div class="compass-base">
+                                <div class="compass-needle" id="qiblaNeedle"></div>
+                                <div class="compass-direction" id="compassDirection">72° NE</div>
+                            </div>
+                        </div>
+                        <p style="font-size: 1.2rem; margin-bottom: 1rem;">Qibla Direction: <strong id="qiblaDegree">72°</strong> (North-East)</p>
+                        <p style="color: #666; margin-bottom: 1.5rem;">Point the red needle on your device towards the golden needle above.</p>
+                        <button id="calibrateBtn" class="btn"><i class="fas fa-sync-alt"></i> Calibrate Compass</button>
+                    </div>
+                </section>
+
+                <section class="dashboard-card">
+                    <h3><i class="fas fa-calendar-alt"></i> Today's Prayer Schedule</h3>
+                    <div class="schedule-controls">
+                        <div>
+                            <strong id="scheduleDate">Thursday, December 18, 2025</strong><br>
+                            <span id="hijriDate">20 Jumada al-Akhirah 1446 AH</span>
+                        </div>
+                        <div>
+                            <label for="calculationMethod" style="margin-right: 10px;">Method:</label>
+                            <select id="calculationMethod" style="padding: 8px; border-radius: 6px; border: 1px solid var(--medium-gray);">
+                                <option value="MWL">Muslim World League</option>
+                                <option value="ISNA">Islamic Society of North America</option>
+                                <option value="Egypt">Egyptian General Authority</option>
+                                <option value="Makkah">Umm al-Qura, Makkah</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="prayer-schedule">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Prayer</th>
+                                    <th>Begins</th>
+                                    <th>Iqamah</th>
+                                    <th>Reminder</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prayerTimesBody">
+                                <!-- Dynamic content from JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <h4><i class="fas fa-map-marker-alt"></i> Nearby Places</h4>
+                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                            <a href="#" class="action-card" style="flex: 1; text-align: center; padding: 1rem;">
+                                <i class="fas fa-mosque" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--primary-green);"></i>
+                                <span style="font-weight: 600; color: var(--primary-green);">Mosque Finder</span>
+                            </a>
+                            <a href="#" class="action-card" style="flex: 1; text-align: center; padding: 1rem;">
+                                <i class="fas fa-door-open" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: var(--accent-gold);"></i>
+                                <span style="font-weight: 600; color: var(--accent-gold);">Prayer Rooms</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- Quran Page (Placeholder) -->
+        <section id="quran" class="page">
+            <div class="welcome-banner">
+                <h2>Quran & Islamic Resources</h2>
+                <div class="prayer-highlight">
+                    <i class="fas fa-book-quran"></i>
+                    <span>Currently Reading: <strong>Surah Al-Fatiha</strong></span>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3><i class="fas quran-icon">ٱ</i> Quran Reader</h3>
+                <p style="text-align: center; padding: 2rem;">Quran interface will be implemented here with audio, translation, and bookmarking features.</p>
+            </div>
+        </section>
+
+        <!-- Halal Living Page (Placeholder) -->
+        <section id="halal" class="page">
+            <div class="welcome-banner">
+                <h2>Halal Living</h2>
+                <div class="prayer-highlight">
+                    <i class="fas fa-utensils"></i>
+                    <span>Find Halal restaurants and scan products</span>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3><i class="fas fa-search"></i> Halal Restaurant Finder</h3>
+                <p style="text-align: center; padding: 2rem;">Interactive map and scanner for Halal products will be implemented here.</p>
+            </div>
+        </section>
+
+        <!-- Community Page (Placeholder) -->
+        <section id="community" class="page">
+            <div class="welcome-banner">
+                <h2>Community & Events</h2>
+                <div class="prayer-highlight">
+                    <i class="fas fa-users"></i>
+                    <span>Connect with the Muslim community</span>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3><i class="fas fa-calendar-check"></i> Upcoming Events</h3>
+                <p style="text-align: center; padding: 2rem;">Community events, volunteer opportunities, and donation links will be shown here.</p>
+            </div>
+        </section>
+
+        <!-- Profile Page (Placeholder) -->
+        <section id="profile" class="page">
+            <div class="welcome-banner">
+                <h2>Your Profile</h2>
+                <div class="prayer-highlight">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Manage your account and preferences</span>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+                <p style="text-align: center; padding: 2rem;">User profile, prayer calculation settings, and notification preferences will be managed here.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 MyDeen Companion. Designed with care for the Ummah.</p>
+            <p>This is a functional prototype. Features like real-time prayer calculation would require backend integration.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== GLOBAL VARIABLES =====
+        let currentPage = 'home';
+        let nextPrayerCountdown;
+        let qiblaRotation = 70;
+
+        // ===== UTILITY FUNCTIONS =====
+        function showMessage(message, type = 'success') {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type}`;
+            
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000);
+            
+            messageBox.style.display = 'block';
+        }
+
+        function switchPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update navigation active state
+            document.querySelectorAll('#mainNav li').forEach(li => {
+                li.classList.remove('active');
+            });
+            
+            document.querySelector(`#mainNav a[data-page="${pageId}"]`).parentElement.classList.add('active');
+            
+            // Update current page
+            currentPage = pageId;
+            
+            // If switching to prayer page, initialize prayer times
+            if (pageId === 'prayer') {
+                initializePrayerPage();
+            }
+            
+            // Close mobile menu if open
+            if (window.innerWidth <= 768) {
+                document.getElementById('mainNav').classList.remove('active');
+            }
+        }
+
+        // ===== PRAYER TIME FUNCTIONS =====
+        function initializePrayerPage() {
+            // Set today's dates
+            const now = moment();
+            document.getElementById('scheduleDate').textContent = now.format('dddd, MMMM D, YYYY');
+            
+            // For Hijri date, we would need a library - using placeholder for now
+            const hijriMonths = ['Muharram', 'Safar', 'Rabi\' al-Awwal', 'Rabi\' al-Thani', 
+                                 'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', 'Sha\'ban', 
+                                 'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah'];
+            const hijriDay = now.date() % 30 + 1;
+            const hijriMonth = hijriMonths[now.month() % 12];
+            const hijriYear = 1446 + Math.floor(now.month() / 12);
+            document.getElementById('hijriDate').textContent = `${hijriDay} ${hijriMonth} ${hijriYear} AH`;
+
+            // Populate the prayer table
+            const prayerTimesBody = document.getElementById('prayerTimesBody');
+            prayerTimesBody.innerHTML = '';
+            
+            const prayers = [
+                { name: "Fajr", begins: "5:45 AM", iqamah: "6:00 AM" },
+                { name: "Sunrise", begins: "7:10 AM", iqamah: "-" },
+                { name: "Dhuhr", begins: "1:15 PM", iqamah: "1:30 PM" },
+                { name: "Asr", begins: "3:45 PM", iqamah: "4:00 PM" },
+                { name: "Maghrib", begins: "7:10 PM", iqamah: "7:15 PM" },
+                { name: "Isha", begins: "8:30 PM", iqamah: "8:45 PM" }
+            ];
+
+            prayers.forEach(prayer => {
+                const row = document.createElement('tr');
+                const isCurrent = prayer.name === "Asr"; // Example: Highlight Asr
+                
+                row.innerHTML = `
+                    <td style="font-weight: ${isCurrent ? '600' : '400'};">${prayer.name}</td>
+                    <td>${prayer.begins}</td>
+                    <td>${prayer.iqamah}</td>
+                    <td>
+                        <label class="reminder-switch">
+                            <input type="checkbox" ${prayer.iqamah !== '-' ? 'checked' : ''} ${prayer.iqamah === '-' ? 'disabled' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                `;
+                
+                if (isCurrent) {
+                    row.style.backgroundColor = '#E8F5E9';
+                }
+                
+                prayerTimesBody.appendChild(row);
+            });
+            
+            // Attach event listeners to the new toggle switches
+            attachToggleListeners();
+        }
+
+        function attachToggleListeners() {
+            document.querySelectorAll('.reminder-switch input').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const prayerName = this.closest('tr').cells[0].textContent;
+                    const action = this.checked ? 'enabled' : 'disabled';
+                    showMessage(`Reminder for ${prayerName} ${action}`, 'success');
+                });
+            });
+        }
+
+        function updateNextPrayer() {
+            // This simulates a countdown to the next prayer
+            let minutesLeft = 85; // 1 hour 25 minutes
+            
+            if (nextPrayerCountdown) {
+                clearInterval(nextPrayerCountdown);
+            }
+            
+            nextPrayerCountdown = setInterval(() => {
+                if (minutesLeft <= 0) {
+                    clearInterval(nextPrayerCountdown);
+                    document.getElementById('nextPrayerName').textContent = 'Maghrib';
+                    document.getElementById('nextPrayerTime').textContent = '0m';
+                    document.getElementById('nextPrayerActualTime').textContent = '7:10 PM';
+                    
+                    // Show notification
+                    if (Notification.permission === 'granted') {
+                        new Notification('MyDeen Companion', {
+                            body: 'Time for Asr prayer!',
+                            icon: 'https://cdn-icons-png.flaticon.com/512/3208/3208720.png'
+                        });
+                    }
+                    
+                    showMessage("Time for Asr prayer!", "success");
+                    return;
+                }
+                
+                minutesLeft--;
+                const hours = Math.floor(minutesLeft / 60);
+                const mins = minutesLeft % 60;
+                document.getElementById('nextPrayerTime').textContent = `${hours > 0 ? hours + 'h ' : ''}${mins}m`;
+            }, 1000); // Update every second for demo
+        }
+
+        // ===== QIBLA COMPASS FUNCTIONS =====
+        function calibrateQibla() {
+            // Simulate a new calibration by slightly changing the needle
+            qiblaRotation = (qiblaRotation + 5 + Math.random() * 10) % 360;
+            const qiblaNeedle = document.getElementById('qiblaNeedle');
+            qiblaNeedle.style.transform = `translateX(-50%) rotate(${qiblaRotation}deg)`;
+            
+            // Update display
+            const degrees = Math.round(qiblaRotation);
+            let direction = '';
+            
+            if (degrees >= 337.5 || degrees < 22.5) direction = 'N';
+            else if (degrees >= 22.5 && degrees < 67.5) direction = 'NE';
+            else if (degrees >= 67.5 && degrees < 112.5) direction = 'E';
+            else if (degrees >= 112.5 && degrees < 157.5) direction = 'SE';
+            else if (degrees >= 157.5 && degrees < 202.5) direction = 'S';
+            else if (degrees >= 202.5 && degrees < 247.5) direction = 'SW';
+            else if (degrees >= 247.5 && degrees < 292.5) direction = 'W';
+            else if (degrees >= 292.5 && degrees < 337.5) direction = 'NW';
+            
+            document.getElementById('qiblaDegree').textContent = `${degrees}°`;
+            document.getElementById('compassDirection').textContent = `${degrees}° ${direction}`;
+            
+            const calibrateBtn = document.getElementById('calibrateBtn');
+            calibrateBtn.innerHTML = '<i class="fas fa-check"></i> Calibrated!';
+            calibrateBtn.style.backgroundColor = 'var(--success)';
+            
+            setTimeout(() => {
+                calibrateBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Re-calibrate';
+                calibrateBtn.style.backgroundColor = '';
+            }, 1500);
+            
+            showMessage('Qibla compass calibrated!', 'success');
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('MyDeen Companion Prototype Loaded');
+            
+            // Initialize prayer page
+            initializePrayerPage();
+            
+            // Start the prayer countdown simulation
+            updateNextPrayer();
+            
+            // Set user name from localStorage or default
+            const userNameElement = document.getElementById('userName');
+            const savedName = localStorage.getItem('myDeenUserName');
+            if (savedName) {
+                userNameElement.textContent = savedName;
+            } else {
+                userNameElement.textContent = 'Ahmed';
+                localStorage.setItem('myDeenUserName', 'Ahmed');
+            }
+            
+            // ===== EVENT LISTENERS =====
+            
+            // Navigation links
+            document.querySelectorAll('#mainNav a[data-page]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    switchPage(pageId);
+                });
+            });
+            
+            // Quick action cards
+            document.querySelectorAll('.action-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    if (action) {
+                        switch(action) {
+                            case 'qibla':
+                                switchPage('prayer');
+                                showMessage('Opening Qibla compass...', 'success');
+                                break;
+                            case 'dua':
+                                showMessage('Opening Dua collection with 500+ Duas...', 'success');
+                                break;
+                            case 'quran':
+                                switchPage('quran');
+                                showMessage('Opening Quran reader...', 'success');
+                                break;
+                            case 'scanner':
+                                showMessage('Opening Halal product scanner...', 'success');
+                                break;
+                            default:
+                                if (this.getAttribute('data-page')) {
+                                    switchPage(this.getAttribute('data-page'));
+                                } else {
+                                    showMessage('Feature coming soon!', 'success');
+                                }
+                        }
+                    }
+                });
+            });
+            
+            // View all links
+            document.querySelectorAll('.view-all[data-page]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    switchPage(pageId);
+                });
+            });
+            
+            // Qibla calibration button
+            document.getElementById('calibrateBtn').addEventListener('click', calibrateQibla);
+            
+            // Change location button
+            document.getElementById('changeLocationBtn').addEventListener('click', function() {
+                const newCity = prompt("Enter a new city for prayer times (e.g., London, Dubai):", "Kuala Lumpur");
+                if (newCity && newCity.trim() !== "") {
+                    document.getElementById('currentLocation').textContent = newCity.trim() + ", Malaysia";
+                    showMessage(`Location changed to ${newCity}. Prayer times would update accordingly.`, 'success');
+                    
+                    // In a real app, this would trigger a recalculation of prayer times
+                }
+            });
+            
+            // Calculation method change
+            document.getElementById('calculationMethod').addEventListener('change', function() {
+                const methodName = this.options[this.selectedIndex].text;
+                showMessage(`Prayer times recalculated using the ${methodName} method.`, 'success');
+            });
+            
+            // Mobile menu toggle
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                const nav = document.getElementById('mainNav');
+                nav.classList.toggle('active');
+                this.innerHTML = nav.classList.contains('active') ? 
+                    '<i class="fas fa-times"></i>' : 
+                    '<i class="fas fa-bars"></i>';
+            });
+            
+            // Request notification permission
+            if ('Notification' in window && Notification.permission === 'default') {
+                setTimeout(() => {
+                    if (confirm('MyDeen Companion would like to send you prayer time notifications. Allow?')) {
+                        Notification.requestPermission();
+                    }
+                }, 2000);
+            }
+            
+            // Show welcome message
+            setTimeout(() => {
+                showMessage('Welcome to MyDeen Companion! All features are now active.', 'success');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
